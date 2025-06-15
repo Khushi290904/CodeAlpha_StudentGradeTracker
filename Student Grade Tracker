@@ -1,0 +1,128 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import code.GradeTracker;
+
+public class GradeTracker {
+    private ArrayList<String> studentNames;
+    private ArrayList<Double> studentGrades;
+    private Scanner scanner;
+
+    public GradeTracker() {
+        studentNames = new ArrayList<>();
+        studentGrades = new ArrayList<>();
+        scanner = new Scanner(System.in);
+    }
+
+    public void addStudent() {
+        System.out.print("Enter student name: ");
+        String name = scanner.nextLine();
+        
+        double grade = getValidGrade();
+        
+        studentNames.add(name);
+        studentGrades.add(grade);
+        System.out.println("Student " + name + " added successfully!");
+    }
+
+    private double getValidGrade() {
+        double grade;
+        while (true) {
+            System.out.print("Enter grade (0-100): ");
+            try {
+                grade = Double.parseDouble(scanner.nextLine());
+                if (grade >= 0 && grade <= 100) {
+                    return grade;
+                } else {
+                    System.out.println("Grade must be between 0 and 100.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+    }
+
+    public void displayStatistics() {
+        if (studentGrades.isEmpty()) {
+            System.out.println("No student data available.");
+            return;
+        }
+
+        double sum = 0;
+        double highest = studentGrades.get(0);
+        double lowest = studentGrades.get(0);
+        String highestStudent = studentNames.get(0);
+        String lowestStudent = studentNames.get(0);
+
+        for (int i = 0; i < studentGrades.size(); i++) {
+            double grade = studentGrades.get(i);
+            sum += grade;
+            
+            if (grade > highest) {
+                highest = grade;
+                highestStudent = studentNames.get(i);
+            }
+            if (grade < lowest) {
+                lowest = grade;
+                lowestStudent = studentNames.get(i);
+            }
+        }
+
+        double average = sum / studentGrades.size();
+        
+        System.out.println("\nClass Statistics:");
+        System.out.printf("Average score: %.2f%n", average);
+        System.out.println("Highest score: " + highest + " (" + highestStudent + ")");
+        System.out.println("Lowest score: " + lowest + " (" + lowestStudent + ")");
+        System.out.println("Total students: " + studentGrades.size());
+    }
+
+    public void displayAllStudents() {
+        if (studentNames.isEmpty()) {
+            System.out.println("No students recorded.");
+            return;
+        }
+
+        System.out.println("\nStudent List:");
+        for (int i = 0; i < studentNames.size(); i++) {
+            System.out.println(studentNames.get(i) + ": " + studentGrades.get(i));
+        }
+    }
+
+    public void run() {
+        while (true) {
+            System.out.println("\nStudent Grade Tracker");
+            System.out.println("1. Add student");
+            System.out.println("2. Display statistics");
+            System.out.println("3. Display all students");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+
+            String choice = scanner.nextLine();
+            
+            switch (choice) {
+                case "1":
+                    addStudent();
+                    break;
+                case "2":
+                    displayStatistics();
+                    break;
+                case "3":
+                    displayAllStudents();
+                    break;
+                case "4":
+                    System.out.println("Exiting program...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        GradeTracker tracker = new GradeTracker();
+        tracker.run();
+    }
+}
+
